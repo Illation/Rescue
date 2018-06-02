@@ -3,24 +3,34 @@ using System.Collections;
 
 public class PlayerControl : MonoBehaviour
 {
-	[HideInInspector]
-	public bool facingRight = true;			// For determining which way the player is currently facing.
-	[HideInInspector]
-	public bool jump = false;				// Condition for whether the player should jump.
+    [HideInInspector]
+    public bool facingRight = true;         // For determining which way the player is currently facing.
+    [HideInInspector]
+    public bool jump = false;               // Condition for whether the player should jump.
 
 
-	public float moveForce = 365f;			// Amount of force added to move the player left and right.
-	public float maxSpeed = 5f;				// The fastest the player can travel in the x axis.
-	public AudioClip[] jumpClips;			// Array of clips for when the player jumps.
-	public float jumpForce = 1000f;			// Amount of force added when the player jumps.
-	public AudioClip[] taunts;				// Array of clips for when the player taunts.
-	public float tauntProbability = 50f;	// Chance of a taunt happening.
-	public float tauntDelay = 1f;			// Delay for when the taunt should happen.
+    public float moveForce = 365f;          // Amount of force added to move the player left and right.
+    public float maxSpeed = 5f;             // The fastest the player can travel in the x axis.
+    public AudioClip[] jumpClips;           // Array of clips for when the player jumps.
+    public float jumpForce = 1000f;         // Amount of force added when the player jumps.
+    public AudioClip[] taunts;              // Array of clips for when the player taunts.
+    public float tauntProbability = 50f;    // Chance of a taunt happening.
+    public float tauntDelay = 1f;           // Delay for when the taunt should happen.
 
 
-	private int tauntIndex;					// The index of the taunts array indicating the most recent taunt.
-	private Transform groundCheck;			// A position marking where to check if the player is grounded.
-	private bool grounded = false;			// Whether or not the player is grounded.
+    private int tauntIndex;                 // The index of the taunts array indicating the most recent taunt.
+    private Transform groundCheck;          // A position marking where to check if the player is grounded.
+    public Transform GroundCheck
+    {
+        get { return groundCheck; }
+    }
+
+    private bool grounded = false;			// Whether or not the player is grounded.
+    public bool IsGrounded
+        {
+            get {return grounded;}
+        }
+
 	private Animator anim;					// Reference to the player's animator component.
 
 
@@ -77,8 +87,12 @@ public class PlayerControl : MonoBehaviour
 			anim.SetTrigger("Jump");
 
 			// Play a random jump audio clip.
-			int i = Random.Range(0, jumpClips.Length);
-			AudioSource.PlayClipAtPoint(jumpClips[i], transform.position);
+            if (jumpClips.Length > 0)
+            {
+                int i = Random.Range(0, jumpClips.Length);
+                AudioSource.PlayClipAtPoint(jumpClips[i], transform.position);
+            }
+	
 
 			// Add a vertical force to the player.
 			GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, jumpForce));
