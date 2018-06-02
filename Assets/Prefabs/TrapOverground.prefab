@@ -139,6 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SetSprite: {fileID: 1403464573946310}
   ActivatedSprite: {fileID: 1309722074791896}
+  PoximityTrigger: {fileID: 61007665487609818}
 --- !u!212 &212051376029894598
 SpriteRenderer:
   m_ObjectHideFlags: 1

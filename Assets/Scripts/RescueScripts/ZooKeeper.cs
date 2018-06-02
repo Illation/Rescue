@@ -6,10 +6,12 @@ public class ZooKeeper : MonoBehaviour
 {
     public PlayerControl thePlayerControl;
     public Trap trapPrefab;
-    
 
+
+    private bool pickupTrap = false;
     private bool dropTrap = false;
     private bool activateTrap = false;
+    private bool baitTrap = false;
 
     private bool holdingTrap = false;
     private bool trapSet = false;
@@ -27,22 +29,26 @@ public class ZooKeeper : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        if (Input.GetButtonDown("DropTrap") && thePlayerControl.IsGrounded && holdingTrap)
+        if (trapCloseTo == null || !trapCloseTo.IsChoosingBait())
         {
-            dropTrap = true;
+            if (Input.GetButtonDown("DropTrap") && thePlayerControl.IsGrounded && holdingTrap)
+            {
+                dropTrap = true;
+            }
+            else if (Input.GetButtonDown("PickupTrap") && thePlayerControl.IsGrounded && trapCloseTo != null)
+            {
+                pickupTrap = true;
+                trapSet = false;
+            }
+            else if (Input.GetButtonDown("ActivateTrap") && trapSet)
+            {
+                activateTrap = true;
+            }
+            else if (Input.GetButtonDown("BaitTrap") && trapCloseTo != null && !trapCloseTo.IsChoosingBait() && trapCloseTo.IsBaited() == false)
+            {
+                baitTrap = true;
+            }
         }
-
-        if (Input.GetButtonDown("PickupTrap") && thePlayerControl.IsGrounded && holdingTrap)
-        {
-            dropTrap = true;
-        }
-
-        if (Input.GetButtonDown("ActivateTrap") && trapSet)
-        {
-            activateTrap = true;
-        }
-
-
     }
 
     private void FixedUpdate()
@@ -50,17 +56,44 @@ public class ZooKeeper : MonoBehaviour
         if (dropTrap)
         {
             print("DropTrap");
-            trapInstance = Instantiate(trapPrefab);
-            trapInstance.transform.position = thePlayerControl.GroundCheck.position;
-            dropTrap = false;
-            holdingTrap = false;
-            trapSet = true;
+            if (trapInstance != null)
+            {
+                trapInstance.transform.position = thePlayerControl.GroundCheck.position;
+                trapInstance.gameObject.SetActive(true);
+                dropTrap = false;
+                holdingTrap = false;
+                trapSet = true;
+            }
+        }
+
+        if (pickupTrap)
+        {
+            if (trapCloseTo != null)
+            {
+                trapInstance = trapCloseTo;
+                trapCloseTo.gameObject.SetActive(false);
+                trapCloseTo = null;
+                holdingTrap = true;
+            }
+
+            pickupTrap = false;
         }
 
         if (activateTrap)
         {
             trapInstance.Activate();
             trapSet = false;
+            trapInstance = null;
+
+            activateTrap = false;
+        }
+
+        if (baitTrap)
+        {
+            trapCloseTo.ShowBaitMenu();
+            baitTrap = false;
+            GetComponent<PlayerControl>().Stop();
+            GetComponent<PlayerControl>().enabled = false;
         }
     }
 

@@ -151,4 +151,9 @@ public class PlayerControl : MonoBehaviour
 			// Otherwise return this index.
 			return i;
 	}
+
+    public void Stop()
+    {
+        GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+    }
 }
