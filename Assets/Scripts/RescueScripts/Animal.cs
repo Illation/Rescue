@@ -20,19 +20,68 @@ public class Animal : MonoBehaviour
     private float currStopTime = 0;
     private bool hasStopped = true;
 
-	
-	void Awake()
+    private Transform groundCheck;          // A position marking where to check if the player is grounded.
+    public Transform GroundCheck
+    {
+        get { return groundCheck; }
+    }
+    private bool grounded = false;          // Whether or not the player is grounded.
+    public bool IsGrounded
+    {
+        get { return grounded; }
+    }
+    public float jumpForce = 1000f;
+
+    // Stuff to make sure the zoo keeper spooks the animals
+    public ZooKeeper Keeper;
+    public float VisibleFleeDist = 4f;
+    public float SpiderSense = 1.5f;
+    private bool isFleeing = false;
+    public float FleeCooldownTime = 1f;
+    private float currFleeCDTime = 0;
+    public float FleeSpeedMult = 1.5f;
+
+    public bool FacingKeeper
+    {
+        get
+        {
+            if (transform.localScale.x < 0)
+            {
+                return Keeper.transform.position.x < transform.position.x;
+            }
+            else
+            {
+                return Keeper.transform.position.x > transform.position.x;
+            }
+        }
+    }
+
+    void Awake()
 	{
 		// Setting up the references.
 		ren = transform.Find("body").GetComponent<SpriteRenderer>();
 		frontCheck = transform.Find("frontCheck").transform;
         rigBod = transform.GetComponent<Rigidbody2D>();
 
-        currDirChange = MinDirChange;
-        currStopTime = MinStopTime;
+        Keeper = GameObject.Find("ZooKeeper").GetComponent<ZooKeeper>();
+
+        groundCheck = transform.Find("groundCheck");
+
+        if (Random.Range(0, 2) == 1)
+        {
+            Flip();
+        }
+
+        currDirChange = Random.Range(MinDirChange, MaxDirChange);
+        currStopTime = Random.Range(0f, MaxStopTime);
 	}
 
-	void FixedUpdate ()
+    private void Update()
+    {
+		grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));  
+    }
+
+    void FixedUpdate ()
 	{
 		// Create an array of all the colliders in front of the enemy.
 		Collider2D[] frontHits = Physics2D.OverlapPointAll(frontCheck.position, 1);
@@ -49,12 +98,7 @@ public class Animal : MonoBehaviour
 			}
 		}
 
-        currDirChange -= Time.deltaTime;
-        if(currDirChange <= 0)
-        {
-            currDirChange = Random.Range(MinDirChange, MaxDirChange);
-            Flip();
-        }
+        FleeingBehaviour();
 
         Move();
 	}
@@ -62,7 +106,7 @@ public class Animal : MonoBehaviour
     public void Move()
     {
         currStopTime -= Time.deltaTime;
-        if (currStopTime <= 0)
+        if (currStopTime <= 0 && IsGrounded)
         {
             hasStopped = !hasStopped;
             if (hasStopped)
@@ -74,13 +118,26 @@ public class Animal : MonoBehaviour
                 currStopTime = Random.Range(MinWalkTime, MaxWalkTime);
             }
         }
-        if (hasStopped)
+        if (hasStopped && !isFleeing)
         {
+            currDirChange -= Time.deltaTime;
+            if (currDirChange <= 0)
+            {
+                currDirChange = Random.Range(MinDirChange, MaxDirChange);
+                Flip();
+            }
+
             rigBod.velocity = new Vector2(0, rigBod.velocity.y);	
         }
         else
         {
-            rigBod.velocity = new Vector2(transform.localScale.x * moveSpeed, rigBod.velocity.y);	
+            float horizontalVel = transform.localScale.x * moveSpeed * (isFleeing ? FleeSpeedMult : 1);
+            rigBod.velocity = new Vector2(horizontalVel, rigBod.velocity.y);	
+            if(IsGrounded)
+            {
+                // Add a vertical force to the player.
+                rigBod.AddForce(new Vector2(0f, jumpForce));
+            }
         }
     }
 
@@ -91,4 +148,45 @@ public class Animal : MonoBehaviour
 		enemyScale.x *= -1;
 		transform.localScale = enemyScale;
 	}
+
+    void FleeingBehaviour()
+    {
+        float keeperDist = Vector3.Distance(transform.position, Keeper.transform.position);
+        if(!FacingKeeper)
+        {
+            if(keeperDist < SpiderSense)
+            {
+                Flip();
+            }
+        }
+        if(FacingKeeper && keeperDist < VisibleFleeDist)
+        {
+            Spook();
+        }
+        if(isFleeing)
+        {
+            if(FacingKeeper)
+            {
+                Flip();
+            }
+            currFleeCDTime -= Time.deltaTime;
+            if(keeperDist < VisibleFleeDist)
+            {
+                currFleeCDTime = FleeCooldownTime;
+            }
+            if(currFleeCDTime<0)
+            {
+                isFleeing = false;
+            }
+        }
+    }
+
+    public void Spook()
+    {
+        if(FacingKeeper)
+        {
+            Flip();
+        }
+        isFleeing = true;
+    }
 }
