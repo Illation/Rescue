@@ -32,6 +32,18 @@ public class Animal : MonoBehaviour
     }
     public float jumpForce = 1000f;
 
+    public RescueGameController.BaitTypes BaitType = RescueGameController.BaitTypes.RABBIT_BAIT;
+    public float VisibleBaitDist = 8f;
+    public float CaptureBaitDist = 1f;
+    private GameObject targetedBait = null;
+    public enum BaitStates
+    {
+        UNAWARE,
+        CHARMED,
+        ON_BAIT
+    };
+    private BaitStates baitState = BaitStates.UNAWARE;
+
     // Stuff to make sure the zoo keeper spooks the animals
     public ZooKeeper Keeper;
     public float VisibleFleeDist = 4f;
@@ -45,14 +57,19 @@ public class Animal : MonoBehaviour
     {
         get
         {
-            if (transform.localScale.x < 0)
-            {
-                return Keeper.transform.position.x < transform.position.x;
-            }
-            else
-            {
-                return Keeper.transform.position.x > transform.position.x;
-            }
+            return Facing(Keeper.transform);
+        }
+    }
+
+    bool Facing(Transform trans)
+    {
+        if (transform.localScale.x < 0)
+        {
+            return trans.position.x < transform.position.x;
+        }
+        else
+        {
+            return trans.position.x > transform.position.x;
         }
     }
 
@@ -100,6 +117,8 @@ public class Animal : MonoBehaviour
 
         FleeingBehaviour();
 
+        BaitingBehaviour();
+
         Move();
 	}
 
@@ -118,7 +137,7 @@ public class Animal : MonoBehaviour
                 currStopTime = Random.Range(MinWalkTime, MaxWalkTime);
             }
         }
-        if (hasStopped && !isFleeing)
+        if (baitState == BaitStates.ON_BAIT || (hasStopped && !isFleeing && !(baitState == BaitStates.CHARMED)))
         {
             currDirChange -= Time.deltaTime;
             if (currDirChange <= 0)
@@ -188,5 +207,65 @@ public class Animal : MonoBehaviour
             Flip();
         }
         isFleeing = true;
+    }
+
+    void BaitingBehaviour()
+    {
+        if(isFleeing)
+        {
+            baitState = BaitStates.UNAWARE;
+            targetedBait = null;
+            return;
+        }
+        switch(baitState)
+        {
+            case BaitStates.UNAWARE:
+                targetedBait = FindBait();
+                if(targetedBait)
+                {
+                    baitState = BaitStates.CHARMED;
+                }
+                break;
+            case BaitStates.CHARMED:
+                if(!Facing(targetedBait.transform))
+                {
+                    Flip();
+                }
+                float trapDist = Mathf.Abs(targetedBait.transform.position.x - transform.position.x);
+                if(trapDist < CaptureBaitDist)
+                {
+                    baitState = BaitStates.ON_BAIT;
+                }
+                break;
+            case BaitStates.ON_BAIT:
+                break;
+        }
+    }
+
+    GameObject FindBait()
+    {
+        var traps = GameObject.FindGameObjectsWithTag("Trap");
+
+        GameObject retTrap = null;
+
+        float closestTrapDist = VisibleBaitDist;
+        foreach (GameObject trap in traps)
+        {
+            Trap trapComp = trap.GetComponent<Trap>();
+            if(trapComp)
+            {
+                if(trapComp.GetSelectedBait == BaitType && Facing(trapComp.transform))
+                {
+                    float trapDist = Vector3.Distance(trap.transform.position, transform.position);
+                    if(trapDist < closestTrapDist)
+                    {
+                        retTrap = trap;
+                        closestTrapDist = trapDist;
+                    }
+                }
+            }
+        }
+
+        return retTrap;
     }
 }

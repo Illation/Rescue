@@ -123,7 +123,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1685823413857178}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.6, y: -0.59, z: 0}
+  m_LocalPosition: {x: 1.8113499, y: -1.2384039, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4110727508884322}
@@ -229,6 +229,9 @@ MonoBehaviour:
   MinWalkTime: 1
   MaxWalkTime: 3
   jumpForce: 1100
+  BaitType: 2
+  VisibleBaitDist: 8
+  CaptureBaitDist: 1.5
   Keeper: {fileID: 0}
   VisibleFleeDist: 6
   SpiderSense: 3

@@ -16,7 +16,11 @@ public class Trap : MonoBehaviour {
     bool CanSelectionMove = false;
     bool CanMakeSelection = false;
 
-    RescueGameController.BaitTypes SelectedBait = RescueGameController.BaitTypes.NONE_BAIT;
+    RescueGameController.BaitTypes selectedBait = RescueGameController.BaitTypes.NONE_BAIT;
+    public RescueGameController.BaitTypes GetSelectedBait
+    {
+        get { return selectedBait; }
+    }
 
     // Use this for initialization
     void Start ()
@@ -72,7 +76,7 @@ public class Trap : MonoBehaviour {
 
             if (Input.GetButtonDown("BaitTrap"))
             {
-                SelectedBait = ShownBaitTypes[SelectedBaitIndex];
+                selectedBait = ShownBaitTypes[SelectedBaitIndex];
                 BaitMenuParent.SetActive(false);
                 RescueGameController.Instance.AllowPlayerToMove(true);
             }
@@ -128,7 +132,7 @@ public class Trap : MonoBehaviour {
 
     public bool IsBaited()
     {
-        return SelectedBait != RescueGameController.BaitTypes.NONE_BAIT;
+        return selectedBait != RescueGameController.BaitTypes.NONE_BAIT;
     }
 
     public bool IsChoosingBait()

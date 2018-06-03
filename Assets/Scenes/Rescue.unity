@@ -1930,9 +1930,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Baits:
+  - {fileID: 0}
   - {fileID: 1128305475904048, guid: 9299f2293cb85aa48842e777b4e9a62f, type: 2}
-  - {fileID: 1128305475904048, guid: 9299f2293cb85aa48842e777b4e9a62f, type: 2}
-  - {fileID: 1128305475904048, guid: 9299f2293cb85aa48842e777b4e9a62f, type: 2}
+  - {fileID: 1128305475904048, guid: 85e8f7ba9af11584fb6f5014708f6d7b, type: 2}
   Player: {fileID: 2862205}
 --- !u!4 &1675878533
 Transform:
