@@ -21,6 +21,10 @@ public class ZooKeeper : MonoBehaviour
 
     private Trap trapCloseTo;
     private Trap trapInstance;
+    public Trap TrapInstance
+    {
+        get { return trapInstance; }
+    }
 
 
 	// Use this for initialization

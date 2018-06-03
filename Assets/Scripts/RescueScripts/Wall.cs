@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class Wall : MonoBehaviour
 {
-    public string AnimalType = "Rabbit";
+    public RescueGameController.AnimalTypes AnimalType = RescueGameController.AnimalTypes.ANIMAL_RABBIT;
 }

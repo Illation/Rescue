@@ -10,7 +10,7 @@ public class Animal : MonoBehaviour
 	private Transform frontCheck;		// Reference to the position of the gameobject used for checking if something is in front.
     private Rigidbody2D rigBod;
 
-    public string TypeName = "Rabbit";
+    public RescueGameController.AnimalTypes TypeName = RescueGameController.AnimalTypes.ANIMAL_RABBIT;
     private List<Collider2D> CollidedWalls = new List<Collider2D>();
 
     public float MinDirChange = 2;
@@ -278,6 +278,7 @@ public class Animal : MonoBehaviour
                 if(targetedBait.GetComponent<Trap>().IsTriggered)
                 {
                     isTrapped = true;
+                    targetedBait.GetComponent<Trap>().SetTrappedAnimal(this);
                 }
                 break;
         }
