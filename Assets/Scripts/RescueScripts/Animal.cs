@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class Animal : MonoBehaviour
 {
-	public float moveSpeed = 2f;		// The speed the enemy moves at.
+    public float moveSpeed = 2f;        // The speed the enemy moves at.
 
-	private SpriteRenderer ren;			// Reference to the sprite renderer.
-	private Transform frontCheck;		// Reference to the position of the gameobject used for checking if something is in front.
+    private SpriteRenderer ren;         // Reference to the sprite renderer.
+    private Transform frontCheck;		// Reference to the position of the gameobject used for checking if something is in front.
     private Rigidbody2D rigBod;
 
     public RescueGameController.AnimalTypes TypeName = RescueGameController.AnimalTypes.ANIMAL_RABBIT;
@@ -23,6 +23,13 @@ public class Animal : MonoBehaviour
     public float MaxWalkTime = 3;
     private float currStopTime = 0;
     private bool hasStopped = true;
+
+    public bool ShouldFloat = false;
+    private bool isFloating = false;
+    public float GroundedGravity = 11;
+    public float FloatingTimeScale = 2;
+    private float FloatingTimeOffset = 0;
+    public float FloatingMagnitude = 2;
 
     private Transform groundCheck;          // A position marking where to check if the player is grounded.
     public Transform GroundCheck
@@ -86,10 +93,10 @@ public class Animal : MonoBehaviour
     }
 
     void Awake()
-	{
-		// Setting up the references.
-		ren = transform.Find("body").GetComponent<SpriteRenderer>();
-		frontCheck = transform.Find("frontCheck").transform;
+    {
+        // Setting up the references.
+        ren = transform.Find("body").GetComponent<SpriteRenderer>();
+        frontCheck = transform.Find("frontCheck").transform;
         rigBod = transform.GetComponent<Rigidbody2D>();
 
         shock = transform.Find("Shock").gameObject;
@@ -108,41 +115,64 @@ public class Animal : MonoBehaviour
 
         currDirChange = Random.Range(MinDirChange, MaxDirChange);
         currStopTime = Random.Range(0f, MaxStopTime);
-	}
+        FloatingTimeOffset = Random.Range(0f, Mathf.PI);
+    }
 
     private void Update()
     {
-		grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));  
+        grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
+        if (!isFloating && ShouldFloat)
+        {
+            SetFloating(true);
+        }
+        else if (isFloating && !ShouldFloat)
+        {
+            SetFloating(false);
+        }
     }
 
-    void FixedUpdate ()
-	{
-		// Create an array of all the colliders in front of the enemy.
-		Collider2D[] frontHits = Physics2D.OverlapPointAll(frontCheck.position, 1);
+    void FixedUpdate()
+    {
+        // Create an array of all the colliders in front of the enemy.
+        Collider2D[] frontHits = Physics2D.OverlapPointAll(frontCheck.position, 1);
 
-		// Check each of the colliders.
-		foreach(Collider2D c in frontHits)
-		{
-			// If any of the colliders is an Obstacle...
-			if(c.tag == "Obstacle")
-			{
-				// ... Flip the enemy and stop checking the other colliders.
-				Flip ();
-				break;
-			}
-		}
+        // Check each of the colliders.
+        foreach (Collider2D c in frontHits)
+        {
+            // If any of the colliders is an Obstacle...
+            if (c.tag == "Obstacle")
+            {
+                // ... Flip the enemy and stop checking the other colliders.
+                Flip();
+                break;
+            }
+        }
 
         FleeingBehaviour();
 
         BaitingBehaviour();
 
         Move();
-	}
+    }
+
+    public void SetFloating(bool enabled)
+    {
+        if(enabled)
+        {
+            rigBod.gravityScale = 0;
+            isFloating = true;
+        }
+        else
+        {
+            rigBod.gravityScale = GroundedGravity;
+            isFloating = false;
+        }
+    }
 
     public void Move()
     {
         currStopTime -= Time.deltaTime;
-        if (currStopTime <= 0 && IsGrounded)
+        if (currStopTime <= 0 && (IsGrounded || isFloating))
         {
             hasStopped = !hasStopped;
             if (hasStopped)
@@ -170,11 +200,20 @@ public class Animal : MonoBehaviour
             CheckAnimalBounds();
             float horizontalVel = transform.localScale.x * moveSpeed * (isFleeing ? FleeSpeedMult : 1);
             rigBod.velocity = new Vector2(horizontalVel, rigBod.velocity.y);	
-            if(IsGrounded)
+            if(IsGrounded && !isFloating)
             {
                 // Add a vertical force to the player.
                 rigBod.AddForce(new Vector2(0f, jumpForce));
             }
+        }
+        if (isFloating)
+        {
+            float sin = Mathf.Sin((Time.time + FloatingTimeOffset) * FloatingTimeScale);
+            float nextSin = Mathf.Sin((Time.deltaTime + Time.time + FloatingTimeOffset) * FloatingTimeScale);
+            float desiredVel = (nextSin - sin) * FloatingMagnitude;
+            float currentVel = rigBod.velocity.y;
+            rigBod.AddForce(new Vector2(0f, desiredVel-currentVel));
+            Debug.Log("desired velocity: " + desiredVel.ToString());
         }
     }
 
