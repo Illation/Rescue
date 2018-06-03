@@ -17,6 +17,12 @@ public class Trap : MonoBehaviour {
     bool CanSelectionMove = false;
     bool CanMakeSelection = false;
 
+    private Animal trappedAnimal;
+    public Animal TrappedAnimal
+    {
+        get { return trappedAnimal;  }
+    }
+
     RescueGameController.BaitTypes selectedBait = RescueGameController.BaitTypes.NONE_BAIT;
     public RescueGameController.BaitTypes GetSelectedBait
     {
@@ -144,5 +150,10 @@ public class Trap : MonoBehaviour {
     public bool IsChoosingBait()
     {
         return BaitMenuParent.activeInHierarchy;
+    }
+
+    public void SetTrappedAnimal(Animal animal)
+    {
+        trappedAnimal = animal;
     }
 }
