@@ -10,6 +10,8 @@ public class EnvArea : MonoBehaviour {
         get { return playerInArea; }
     }
 
+    public RescueGameController.Enviroments enviroment;
+
     // Use this for initialization
     void Start () {
 		
@@ -26,6 +28,7 @@ public class EnvArea : MonoBehaviour {
         {
             print("Entering " + name);
             playerInArea = true;
+            RescueGameController.Instance.PlayerInEnviroment(enviroment);
         }
     }
 

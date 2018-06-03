@@ -112,8 +112,12 @@ public class Trap : MonoBehaviour {
             GameObject.Destroy(child.gameObject);
         }
 
-        AddBaitType(RescueGameController.BaitTypes.PORPOSISE_BAIT);
-        AddBaitType(RescueGameController.BaitTypes.RABBIT_BAIT);
+       List<RescueGameController.BaitTypes> BaitTypes = RescueGameController.Instance.GetBaitsForTrap(trapType, RescueGameController.Instance.EnviromentPlayerIn);
+
+        for (int i = 0; i < BaitTypes.Count; ++i)
+        {
+            AddBaitType(BaitTypes[i]);
+        }
 
         BaitMenuParent.SetActive(true);
 

@@ -90,10 +90,18 @@ public class RescueGameController : MonoBehaviour
     private Dictionary<AnimalTypes, TrapType> AnimalTrapTypes;
     private Dictionary<AnimalTypes, BaitTypes> AnimalBaitTypes;
 
+    private Dictionary<KeyValuePair<TrapType, Enviroments>, List<BaitTypes>> BaitForEachTrap;
+
     private BaitTypes neededBaitType;
     public BaitTypes NeededBaitType
     {
         get { return neededBaitType;  }
+    }
+
+    private Enviroments enviromentPlayerIn;
+    public Enviroments EnviromentPlayerIn
+    {
+        get { return enviromentPlayerIn; }
     }
 
     // Use this for initialization
@@ -114,36 +122,66 @@ public class RescueGameController : MonoBehaviour
         Clue1List.Add(AnimalTypes.ANIMAL_RABBIT, "Give me space to roam.");
         Clue1List.Add(AnimalTypes.ANIMAL_BADGER, "Give me space to roam.");
         Clue1List.Add(AnimalTypes.ANIMAL_PONY, "Give me space to roam.");
+        Clue1List.Add(AnimalTypes.ANIMAL_SALMON, "I like the water.");
+        Clue1List.Add(AnimalTypes.ANIMAL_GOOSE, "I like the water.");
+        Clue1List.Add(AnimalTypes.ANIMAL_HERON, "I like the water.");
+        Clue1List.Add(AnimalTypes.ANIMAL_WOMBAT, "Give me space to roam.");
 
         Clue2List = new Dictionary<AnimalTypes, string>();
         Clue2List.Add(AnimalTypes.ANIMAL_PORPOISE, "Swim, swim, swim.");
         Clue2List.Add(AnimalTypes.ANIMAL_RABBIT, "Give me space!.");
-        Clue2List.Add(AnimalTypes.ANIMAL_PONY, "Give me space!.");
         Clue2List.Add(AnimalTypes.ANIMAL_BADGER, "I like to sleep with a roof over my head.");
+        Clue2List.Add(AnimalTypes.ANIMAL_PONY, "Give me space!.");
+        Clue2List.Add(AnimalTypes.ANIMAL_SALMON, "Swim, swim, swim.");
+        Clue2List.Add(AnimalTypes.ANIMAL_GOOSE, "On and over, but not under.");
+        Clue2List.Add(AnimalTypes.ANIMAL_HERON, "On and over, but not under.");
+        Clue2List.Add(AnimalTypes.ANIMAL_WOMBAT, "I like to sleep with a roof over my head.");
 
         Clue3List = new Dictionary<AnimalTypes, string>();
         Clue3List.Add(AnimalTypes.ANIMAL_PORPOISE, "Always happy, always smiling.");
         Clue3List.Add(AnimalTypes.ANIMAL_RABBIT, "Big ears, big everything.");
         Clue3List.Add(AnimalTypes.ANIMAL_BADGER, "Black and white and underground.");
         Clue3List.Add(AnimalTypes.ANIMAL_PONY, "I'm a miniature powerhouse.");
+        Clue3List.Add(AnimalTypes.ANIMAL_SALMON, "I travel home to have children.");
+        Clue3List.Add(AnimalTypes.ANIMAL_GOOSE, "Honk!");
+        Clue3List.Add(AnimalTypes.ANIMAL_HERON, "Strutting in the shallows.");
+        Clue3List.Add(AnimalTypes.ANIMAL_WOMBAT, "G'day mate!");
 
         AnimalEnviroments = new Dictionary<AnimalTypes, Enviroments>();
         AnimalEnviroments.Add(AnimalTypes.ANIMAL_PORPOISE, Enviroments.ENVIROMENT_LAKE);
         AnimalEnviroments.Add(AnimalTypes.ANIMAL_RABBIT, Enviroments.ENVIROMENT_FIELD);
         AnimalEnviroments.Add(AnimalTypes.ANIMAL_BADGER, Enviroments.ENVIROMENT_FIELD);
         AnimalEnviroments.Add(AnimalTypes.ANIMAL_PONY, Enviroments.ENVIROMENT_FIELD);
+        AnimalEnviroments.Add(AnimalTypes.ANIMAL_SALMON, Enviroments.ENVIROMENT_LAKE);
+        AnimalEnviroments.Add(AnimalTypes.ANIMAL_GOOSE, Enviroments.ENVIROMENT_LAKE);
+        AnimalEnviroments.Add(AnimalTypes.ANIMAL_HERON, Enviroments.ENVIROMENT_LAKE);
+        AnimalEnviroments.Add(AnimalTypes.ANIMAL_WOMBAT, Enviroments.ENVIROMENT_FIELD);
 
         AnimalTrapTypes = new Dictionary<AnimalTypes, TrapType>();
         AnimalTrapTypes.Add(AnimalTypes.ANIMAL_PORPOISE, TrapType.TRAPTYPE_UNDERSURFACE);
         AnimalTrapTypes.Add(AnimalTypes.ANIMAL_RABBIT, TrapType.TRAPTYPE_SURFACE);
         AnimalTrapTypes.Add(AnimalTypes.ANIMAL_BADGER, TrapType.TRAPTYPE_UNDERSURFACE);
         AnimalTrapTypes.Add(AnimalTypes.ANIMAL_PONY, TrapType.TRAPTYPE_SURFACE);
+        AnimalTrapTypes.Add(AnimalTypes.ANIMAL_SALMON, TrapType.TRAPTYPE_UNDERSURFACE);
+        AnimalTrapTypes.Add(AnimalTypes.ANIMAL_GOOSE, TrapType.TRAPTYPE_SURFACE);
+        AnimalTrapTypes.Add(AnimalTypes.ANIMAL_HERON, TrapType.TRAPTYPE_SURFACE);
+        AnimalTrapTypes.Add(AnimalTypes.ANIMAL_WOMBAT, TrapType.TRAPTYPE_UNDERSURFACE);
 
         AnimalBaitTypes = new Dictionary<AnimalTypes, BaitTypes>();
         AnimalBaitTypes.Add(AnimalTypes.ANIMAL_PORPOISE, BaitTypes.PORPOSISE_BAIT);
         AnimalBaitTypes.Add(AnimalTypes.ANIMAL_RABBIT, BaitTypes.RABBIT_BAIT);
         AnimalBaitTypes.Add(AnimalTypes.ANIMAL_BADGER, BaitTypes.BADGER_BAIT);
         AnimalBaitTypes.Add(AnimalTypes.ANIMAL_PONY, BaitTypes.PONY_BAIT);
+        AnimalBaitTypes.Add(AnimalTypes.ANIMAL_SALMON, BaitTypes.SALMON_BAIT);
+        AnimalBaitTypes.Add(AnimalTypes.ANIMAL_GOOSE, BaitTypes.GOOSE_BAIT);
+        AnimalBaitTypes.Add(AnimalTypes.ANIMAL_HERON, BaitTypes.HERON_BAIT);
+        AnimalBaitTypes.Add(AnimalTypes.ANIMAL_WOMBAT, BaitTypes.WOMBAT_BAIT);
+
+        BaitForEachTrap = new Dictionary<KeyValuePair<TrapType, Enviroments>, List<BaitTypes>>();
+        BaitForEachTrap.Add(new KeyValuePair<TrapType, Enviroments>(TrapType.TRAPTYPE_SURFACE, Enviroments.ENVIROMENT_FIELD), new List<BaitTypes>() { BaitTypes.PONY_BAIT, BaitTypes.RABBIT_BAIT });
+        BaitForEachTrap.Add(new KeyValuePair<TrapType, Enviroments>(TrapType.TRAPTYPE_UNDERSURFACE, Enviroments.ENVIROMENT_FIELD), new List<BaitTypes>() { BaitTypes.BADGER_BAIT, BaitTypes.WOMBAT_BAIT });
+        BaitForEachTrap.Add(new KeyValuePair<TrapType, Enviroments>(TrapType.TRAPTYPE_SURFACE, Enviroments.ENVIROMENT_LAKE), new List<BaitTypes>() { BaitTypes.HERON_BAIT, BaitTypes.GOOSE_BAIT });
+        BaitForEachTrap.Add(new KeyValuePair<TrapType, Enviroments>(TrapType.TRAPTYPE_UNDERSURFACE, Enviroments.ENVIROMENT_LAKE), new List<BaitTypes>() { BaitTypes.PORPOSISE_BAIT, BaitTypes.SALMON_BAIT });
 
         targetAnimal = (AnimalTypes)Random.Range(0, (int)AnimalTypes.NUM_ANIMALS);
         EnvTriggerToUse = EnvTriggers[(int)AnimalEnviroments[targetAnimal]];
@@ -175,7 +213,7 @@ public class RescueGameController : MonoBehaviour
                 break;
 
             case GameStates.BAIT_TRAP:
-                ClueText.text = Clue2List[targetAnimal];
+                ClueText.text = Clue3List[targetAnimal];
                 if (zookeeper.TrapInstance != null && zookeeper.TrapInstance.IsBaited() && zookeeper.TrapInstance.GetSelectedBait == neededBaitType)
                 {
                     gameState = GameStates.CAPTURE_ANIMAL;
@@ -204,5 +242,15 @@ public class RescueGameController : MonoBehaviour
     public void AllowPlayerToMove(bool val)
     {
         Player.enabled = val;
+    }
+
+    public List<BaitTypes> GetBaitsForTrap(TrapType trapType, Enviroments enviroment)
+    {
+        return BaitForEachTrap[new KeyValuePair<TrapType, Enviroments>(trapType, enviroment)];
+    }
+
+    public void PlayerInEnviroment(Enviroments enviroment)
+    {
+        enviromentPlayerIn = enviroment;
     }
 }

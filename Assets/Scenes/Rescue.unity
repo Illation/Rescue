@@ -8064,6 +8064,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b98f803bbfd14246b2cb6b4b32950c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enviroment: 0
 --- !u!1 &1478622979
 GameObject:
   m_ObjectHideFlags: 0
@@ -9069,9 +9070,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Baits:
+  - {fileID: 0}
   - {fileID: 1128305475904048, guid: 9299f2293cb85aa48842e777b4e9a62f, type: 2}
-  - {fileID: 1128305475904048, guid: 9299f2293cb85aa48842e777b4e9a62f, type: 2}
-  - {fileID: 1128305475904048, guid: 9299f2293cb85aa48842e777b4e9a62f, type: 2}
+  - {fileID: 1128305475904048, guid: 85e8f7ba9af11584fb6f5014708f6d7b, type: 2}
+  - {fileID: 1128305475904048, guid: 35a4d2263c4fbf8498b80a8da8c39f56, type: 2}
+  - {fileID: 1128305475904048, guid: 037ba281ff2cb5e4990849be47790558, type: 2}
+  - {fileID: 1128305475904048, guid: a8c0c086f76d1be4bb35f3323b4b67d4, type: 2}
+  - {fileID: 1128305475904048, guid: 8bd768831c4f2ac41af767e3825627b2, type: 2}
+  - {fileID: 1128305475904048, guid: e9baa346c3676ad40a42841ea459c2a0, type: 2}
+  - {fileID: 1128305475904048, guid: 1fdd251a7990a1943b9c46885681fd00, type: 2}
   Player: {fileID: 2862205}
   zookeeper: {fileID: 2862209}
   ClueText: {fileID: 689325320}
@@ -9854,6 +9861,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b98f803bbfd14246b2cb6b4b32950c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enviroment: 1
 --- !u!1 &1885908418
 GameObject:
   m_ObjectHideFlags: 0
