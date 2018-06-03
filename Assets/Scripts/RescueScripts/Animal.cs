@@ -208,9 +208,21 @@ public class Animal : MonoBehaviour
         }
         if (isFloating)
         {
+            float dirOffset = 0;
+            if(baitState == BaitStates.CHARMED)
+            {
+                if(targetedBait.transform.position.y > transform.position.y)
+                {
+                    dirOffset = 0.5f;
+                }
+                else
+                {
+                    dirOffset = -0.5f;
+                }
+            }
             float sin = Mathf.Sin((Time.time + FloatingTimeOffset) * FloatingTimeScale);
             float nextSin = Mathf.Sin((Time.deltaTime + Time.time + FloatingTimeOffset) * FloatingTimeScale);
-            float desiredVel = (nextSin - sin) * FloatingMagnitude;
+            float desiredVel = (nextSin - sin + dirOffset) * FloatingMagnitude;
             float currentVel = rigBod.velocity.y;
             rigBod.AddForce(new Vector2(0f, desiredVel-currentVel));
             Debug.Log("desired velocity: " + desiredVel.ToString());
