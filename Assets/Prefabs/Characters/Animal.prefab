@@ -229,6 +229,9 @@ MonoBehaviour:
   MinWalkTime: 1
   MaxWalkTime: 3
   jumpForce: 1100
+  BaitType: 2
+  VisibleBaitDist: 8
+  CaptureBaitDist: 1.5
   Keeper: {fileID: 0}
   VisibleFleeDist: 6
   SpiderSense: 3
