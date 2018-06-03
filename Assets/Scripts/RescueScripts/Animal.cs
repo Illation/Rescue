@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Animal : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class Animal : MonoBehaviour
 	private SpriteRenderer ren;			// Reference to the sprite renderer.
 	private Transform frontCheck;		// Reference to the position of the gameobject used for checking if something is in front.
     private Rigidbody2D rigBod;
+
+    public string TypeName = "Rabbit";
+    private List<Collider2D> CollidedWalls = new List<Collider2D>();
 
     public float MinDirChange = 2;
     public float MaxDirChange = 3;
@@ -43,6 +47,11 @@ public class Animal : MonoBehaviour
         ON_BAIT
     };
     private BaitStates baitState = BaitStates.UNAWARE;
+    private bool isTrapped = false;
+    public bool IsTrapped
+    {
+        get { return isTrapped; }
+    }
 
     private GameObject shock;
     private ParticleSystem hearts;
@@ -158,12 +167,25 @@ public class Animal : MonoBehaviour
         }
         else
         {
+            CheckAnimalBounds();
             float horizontalVel = transform.localScale.x * moveSpeed * (isFleeing ? FleeSpeedMult : 1);
             rigBod.velocity = new Vector2(horizontalVel, rigBod.velocity.y);	
             if(IsGrounded)
             {
                 // Add a vertical force to the player.
                 rigBod.AddForce(new Vector2(0f, jumpForce));
+            }
+        }
+    }
+
+    void CheckAnimalBounds()
+    {
+        foreach(var wallObj in CollidedWalls)
+        {
+            Wall wall = wallObj.GetComponent<Wall>();
+            if(Facing(wall.transform))
+            {
+                Flip();
             }
         }
     }
@@ -211,6 +233,7 @@ public class Animal : MonoBehaviour
 
     public void Spook()
     {
+        if (isTrapped) return;
         if(FacingKeeper)
         {
             Flip();
@@ -252,6 +275,10 @@ public class Animal : MonoBehaviour
                 }
                 break;
             case BaitStates.ON_BAIT:
+                if(targetedBait.GetComponent<Trap>().IsTriggered)
+                {
+                    isTrapped = true;
+                }
                 break;
         }
     }
@@ -268,7 +295,8 @@ public class Animal : MonoBehaviour
             Trap trapComp = trap.GetComponent<Trap>();
             if(trapComp)
             {
-                if(trapComp.GetSelectedBait == BaitType && Facing(trapComp.transform))
+                bool facingTrap = Facing(trapComp.transform);
+                if (trapComp.GetSelectedBait == BaitType && facingTrap && !trapComp.IsTriggered)
                 {
                     float trapDist = Vector3.Distance(trap.transform.position, transform.position);
                     if(trapDist < closestTrapDist)
@@ -281,5 +309,20 @@ public class Animal : MonoBehaviour
         }
 
         return retTrap;
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "AnimalWall")
+        {
+            if(collision.GetComponent<Wall>().AnimalType == TypeName)
+            {
+                CollidedWalls.Add(collision);
+            }
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        CollidedWalls.Remove(collision);
     }
 }
