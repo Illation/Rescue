@@ -129,8 +129,10 @@ public class Trap : MonoBehaviour {
         CanSelectionMove = false;
         CanMakeSelection = false;
 
-
-
+        if (transform.localScale.x == -1)
+        {
+            BaitMenuParent.transform.localScale = new Vector3(-1, 1, 1);
+        }
     }
 
     private void AddBaitType(RescueGameController.BaitTypes BaitType)
@@ -154,6 +156,7 @@ public class Trap : MonoBehaviour {
 
     public void SetTrappedAnimal(Animal animal)
     {
+        print("Trapped Animal = " + animal.TypeName);
         trappedAnimal = animal;
     }
 }

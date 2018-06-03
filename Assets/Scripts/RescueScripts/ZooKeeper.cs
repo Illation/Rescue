@@ -111,7 +111,6 @@ public class ZooKeeper : MonoBehaviour
         {
             trapInstance.Activate();
             trapSet = false;
-            trapInstance = null;
 
             activateTrap = false;
         }

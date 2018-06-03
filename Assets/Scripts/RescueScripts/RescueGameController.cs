@@ -9,6 +9,12 @@ public class RescueGameController : MonoBehaviour
     {
         ANIMAL_PORPOISE,
         ANIMAL_RABBIT,
+        ANIMAL_BADGER,
+        ANIMAL_PONY,
+        ANIMAL_SALMON,
+        ANIMAL_GOOSE,
+        ANIMAL_HERON,
+        ANIMAL_WOMBAT,
         NUM_ANIMALS
     };
 
@@ -31,7 +37,13 @@ public class RescueGameController : MonoBehaviour
     {
         NONE_BAIT,
         PORPOSISE_BAIT,
-        RABBIT_BAIT
+        RABBIT_BAIT,
+        BADGER_BAIT,
+        PONY_BAIT,
+        SALMON_BAIT,
+        GOOSE_BAIT,
+        HERON_BAIT,
+        WOMBAT_BAIT,
     }
 
     public enum GameStates
