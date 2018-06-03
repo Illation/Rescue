@@ -112,26 +112,38 @@ public class RescueGameController : MonoBehaviour
         Clue1List = new Dictionary<AnimalTypes, string>();
         Clue1List.Add(AnimalTypes.ANIMAL_PORPOISE, "I like the water.");
         Clue1List.Add(AnimalTypes.ANIMAL_RABBIT, "Give me space to roam.");
+        Clue1List.Add(AnimalTypes.ANIMAL_BADGER, "Give me space to roam.");
+        Clue1List.Add(AnimalTypes.ANIMAL_PONY, "Give me space to roam.");
 
         Clue2List = new Dictionary<AnimalTypes, string>();
         Clue2List.Add(AnimalTypes.ANIMAL_PORPOISE, "Swim, swim, swim.");
         Clue2List.Add(AnimalTypes.ANIMAL_RABBIT, "Give me space!.");
+        Clue2List.Add(AnimalTypes.ANIMAL_PONY, "Give me space!.");
+        Clue2List.Add(AnimalTypes.ANIMAL_BADGER, "I like to sleep with a roof over my head.");
 
         Clue3List = new Dictionary<AnimalTypes, string>();
         Clue3List.Add(AnimalTypes.ANIMAL_PORPOISE, "Always happy, always smiling.");
         Clue3List.Add(AnimalTypes.ANIMAL_RABBIT, "Big ears, big everything.");
+        Clue3List.Add(AnimalTypes.ANIMAL_BADGER, "Black and white and underground.");
+        Clue3List.Add(AnimalTypes.ANIMAL_PONY, "I'm a miniature powerhouse.");
 
         AnimalEnviroments = new Dictionary<AnimalTypes, Enviroments>();
         AnimalEnviroments.Add(AnimalTypes.ANIMAL_PORPOISE, Enviroments.ENVIROMENT_LAKE);
         AnimalEnviroments.Add(AnimalTypes.ANIMAL_RABBIT, Enviroments.ENVIROMENT_FIELD);
+        AnimalEnviroments.Add(AnimalTypes.ANIMAL_BADGER, Enviroments.ENVIROMENT_FIELD);
+        AnimalEnviroments.Add(AnimalTypes.ANIMAL_PONY, Enviroments.ENVIROMENT_FIELD);
 
         AnimalTrapTypes = new Dictionary<AnimalTypes, TrapType>();
         AnimalTrapTypes.Add(AnimalTypes.ANIMAL_PORPOISE, TrapType.TRAPTYPE_UNDERSURFACE);
         AnimalTrapTypes.Add(AnimalTypes.ANIMAL_RABBIT, TrapType.TRAPTYPE_SURFACE);
+        AnimalTrapTypes.Add(AnimalTypes.ANIMAL_BADGER, TrapType.TRAPTYPE_UNDERSURFACE);
+        AnimalTrapTypes.Add(AnimalTypes.ANIMAL_PONY, TrapType.TRAPTYPE_SURFACE);
 
         AnimalBaitTypes = new Dictionary<AnimalTypes, BaitTypes>();
         AnimalBaitTypes.Add(AnimalTypes.ANIMAL_PORPOISE, BaitTypes.PORPOSISE_BAIT);
         AnimalBaitTypes.Add(AnimalTypes.ANIMAL_RABBIT, BaitTypes.RABBIT_BAIT);
+        AnimalBaitTypes.Add(AnimalTypes.ANIMAL_BADGER, BaitTypes.BADGER_BAIT);
+        AnimalBaitTypes.Add(AnimalTypes.ANIMAL_PONY, BaitTypes.PONY_BAIT);
 
         targetAnimal = (AnimalTypes)Random.Range(0, (int)AnimalTypes.NUM_ANIMALS);
         EnvTriggerToUse = EnvTriggers[(int)AnimalEnviroments[targetAnimal]];
