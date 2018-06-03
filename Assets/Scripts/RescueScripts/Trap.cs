@@ -22,6 +22,11 @@ public class Trap : MonoBehaviour {
         get { return selectedBait; }
     }
 
+    public bool IsTriggered
+    {
+        get { return ActivatedSprite.gameObject.activeInHierarchy; }
+    }
+
     // Use this for initialization
     void Start ()
     {
