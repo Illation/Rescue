@@ -6,7 +6,10 @@ public class ZooKeeper : MonoBehaviour
 {
     public PlayerControl thePlayerControl;
     public Trap trapPrefab;
-
+    public GameObject NotCarryingSprite;
+    public GameObject CarryingSprite;
+    public Transform CarryingParent;
+    public GameObject DropPos;
 
     private bool pickupTrap = false;
     private bool dropTrap = false;
@@ -23,8 +26,8 @@ public class ZooKeeper : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-		
-	}
+        SetCarrying(false);
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -51,6 +54,26 @@ public class ZooKeeper : MonoBehaviour
         }
     }
 
+    private void SetCarrying(bool val)
+    {
+        holdingTrap = val;
+        NotCarryingSprite.SetActive(!val);
+        CarryingSprite.SetActive(val);
+        if (trapInstance != null)
+        {
+            if (val)
+            {
+                trapInstance.transform.parent = CarryingParent;
+                trapInstance.transform.localPosition = Vector3.zero;
+            }
+            else
+            {
+                trapInstance.transform.parent = null;
+            }
+        }
+
+    }
+
     private void FixedUpdate()
     {
         if (dropTrap)
@@ -58,11 +81,12 @@ public class ZooKeeper : MonoBehaviour
             print("DropTrap");
             if (trapInstance != null)
             {
-                trapInstance.transform.position = thePlayerControl.GroundCheck.position;
-                trapInstance.gameObject.SetActive(true);
-                dropTrap = false;
-                holdingTrap = false;
+                //trapInstance.gameObject.SetActive(true);
+                SetCarrying(false);
                 trapSet = true;
+                trapInstance.transform.position = DropPos.transform.position;
+
+                dropTrap = false;
             }
         }
 
@@ -71,9 +95,9 @@ public class ZooKeeper : MonoBehaviour
             if (trapCloseTo != null)
             {
                 trapInstance = trapCloseTo;
-                trapCloseTo.gameObject.SetActive(false);
+                //trapCloseTo.gameObject.SetActive(false);
                 trapCloseTo = null;
-                holdingTrap = true;
+                SetCarrying(true);
             }
 
             pickupTrap = false;
