@@ -350,7 +350,7 @@ public class Animal : MonoBehaviour
                 bool facingTrap = Facing(trapComp.transform);
                 if (trapComp.GetSelectedBait == BaitType && facingTrap && !trapComp.IsTriggered)
                 {
-                    float trapDist = Vector3.Distance(trap.transform.position, transform.position);
+                    float trapDist = Mathf.Abs(trap.transform.position.x - transform.position.x);
                     if(trapDist < closestTrapDist)
                     {
                         retTrap = trap;
