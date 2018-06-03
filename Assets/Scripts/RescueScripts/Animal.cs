@@ -44,6 +44,9 @@ public class Animal : MonoBehaviour
     };
     private BaitStates baitState = BaitStates.UNAWARE;
 
+    private GameObject shock;
+    private ParticleSystem hearts;
+
     // Stuff to make sure the zoo keeper spooks the animals
     public ZooKeeper Keeper;
     public float VisibleFleeDist = 4f;
@@ -79,6 +82,11 @@ public class Animal : MonoBehaviour
 		ren = transform.Find("body").GetComponent<SpriteRenderer>();
 		frontCheck = transform.Find("frontCheck").transform;
         rigBod = transform.GetComponent<Rigidbody2D>();
+
+        shock = transform.Find("Shock").gameObject;
+        shock.gameObject.SetActive(false);
+        hearts = transform.Find("Hearts").GetComponent<ParticleSystem>();
+        hearts.gameObject.SetActive(false);
 
         Keeper = GameObject.Find("ZooKeeper").GetComponent<ZooKeeper>();
 
@@ -196,6 +204,7 @@ public class Animal : MonoBehaviour
             if(currFleeCDTime<0)
             {
                 isFleeing = false;
+                shock.SetActive(false);
             }
         }
     }
@@ -207,6 +216,7 @@ public class Animal : MonoBehaviour
             Flip();
         }
         isFleeing = true;
+        shock.SetActive(true);
     }
 
     void BaitingBehaviour()
@@ -215,6 +225,8 @@ public class Animal : MonoBehaviour
         {
             baitState = BaitStates.UNAWARE;
             targetedBait = null;
+            hearts.Stop();
+            hearts.gameObject.SetActive(false);
             return;
         }
         switch(baitState)
@@ -224,6 +236,8 @@ public class Animal : MonoBehaviour
                 if(targetedBait)
                 {
                     baitState = BaitStates.CHARMED;
+                    hearts.gameObject.SetActive(true);
+                    hearts.Play();
                 }
                 break;
             case BaitStates.CHARMED:
