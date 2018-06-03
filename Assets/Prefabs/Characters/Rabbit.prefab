@@ -151,7 +151,7 @@ GameObject:
   - component: {fileID: 114222032746867332}
   - component: {fileID: 95652626527193778}
   m_Layer: 10
-  m_Name: Animal
+  m_Name: Rabbit
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -372,6 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 4
+  TypeName: Rabbit
   MinDirChange: 2
   MaxDirChange: 3
   MinStopTime: 2
