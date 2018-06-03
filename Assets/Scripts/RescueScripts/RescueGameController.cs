@@ -18,6 +18,12 @@ public class RescueGameController : MonoBehaviour
         ENVIROMENT_LAKE
     }
 
+    public enum TrapType
+    {
+        TRAPTYPE_SURFACE,
+        TRAPTYPE_UNDERSURFACE
+    }
+
 
 
 
@@ -39,6 +45,7 @@ public class RescueGameController : MonoBehaviour
 
     public List<GameObject> Baits;
     public PlayerControl Player;
+    public ZooKeeper zookeeper;
 
     public Text ClueText;
     public Text InstructionText;
@@ -58,10 +65,16 @@ public class RescueGameController : MonoBehaviour
     private Dictionary<AnimalTypes, string> Clue2List;
     private Dictionary<AnimalTypes, string> Clue3List;
 
-    public List<BoxCollider2D> EnvTriggers;
-    private BoxCollider2D EnvTriggerToUse;
+    public List<EnvArea> EnvTriggers;
+    private EnvArea EnvTriggerToUse;
+    private TrapType wantedTrapType;
+    public TrapType WantedTrapType
+    {
+        get { return wantedTrapType;  }
+    }
 
     private Dictionary<AnimalTypes, Enviroments> AnimalEnviroments;
+    private Dictionary<AnimalTypes, TrapType> AnimalTrapTypes;
 
     // Use this for initialization
     void Start () {
@@ -91,8 +104,13 @@ public class RescueGameController : MonoBehaviour
         AnimalEnviroments.Add(AnimalTypes.ANIMAL_PORPOISE, Enviroments.ENVIROMENT_LAKE);
         AnimalEnviroments.Add(AnimalTypes.ANIMAL_RABBIT, Enviroments.ENVIROMENT_FIELD);
 
+        AnimalTrapTypes = new Dictionary<AnimalTypes, TrapType>();
+        AnimalTrapTypes.Add(AnimalTypes.ANIMAL_PORPOISE, TrapType.TRAPTYPE_UNDERSURFACE);
+        AnimalTrapTypes.Add(AnimalTypes.ANIMAL_RABBIT, TrapType.TRAPTYPE_SURFACE);
+
         targetAnimal = (AnimalTypes)Random.Range(0, (int)AnimalTypes.NUM_ANIMALS);
         EnvTriggerToUse = EnvTriggers[(int)AnimalEnviroments[targetAnimal]];
+        wantedTrapType = AnimalTrapTypes[targetAnimal];
     }
 	
 	// Update is called once per frame
@@ -104,10 +122,18 @@ public class RescueGameController : MonoBehaviour
         {
             case GameStates.GOTO_ENV:
                 ClueText.text = Clue1List[targetAnimal];
+                if (EnvTriggerToUse.IsPlayerInArea)
+                {
+                    gameState = GameStates.GET_TRAP;
+                }
                 break;
 
             case GameStates.GET_TRAP:
                 ClueText.text = Clue2List[targetAnimal];
+                if (zookeeper.TrapInstance != null && zookeeper.TrapInstance.trapType == wantedTrapType)
+                {
+                    gameState = GameStates.BAIT_TRAP;
+                }
                 break;
 
             case GameStates.BAIT_TRAP:

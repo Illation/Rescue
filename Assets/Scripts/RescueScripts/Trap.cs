@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Trap : MonoBehaviour {
 
+    public RescueGameController.TrapType trapType;
     public GameObject SetSprite;
     public GameObject ActivatedSprite;
     public BoxCollider2D PoximityTrigger;
